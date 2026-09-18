@@ -1,0 +1,372 @@
+:root {
+  color-scheme: dark;
+  --bg: #101318;
+  --panel: #171b21;
+  --panel-2: #1d232c;
+  --line: #2a313c;
+  --text: #e8edf4;
+  --muted: #8b95a5;
+  --accent: #3ecf8e;
+  --danger: #f07178;
+  --operator: #4d8bff;
+  --parameter: #f0a14a;
+  --group: #3ecf8e;
+  --annotation: #e6c84a;
+  --cluster: #c084fc;
+  font-family: "Segoe UI", "IBM Plex Sans", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+input {
+  background: #10141a;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.4rem 0.55rem;
+}
+
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 340px;
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas:
+    "top top top"
+    "docs canvas inspector";
+}
+
+.topbar {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 240px;
+}
+
+.brand h1,
+.panel-head h2,
+.inspector-body h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.brand p,
+.muted,
+.kind-label,
+.port-label,
+.canvas-hint,
+.doc-list small {
+  color: var(--muted);
+}
+
+.brand p {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+}
+
+.mark {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.api-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.api-field input {
+  flex: 1;
+}
+
+.status {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+.status[data-state="ok"] {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+}
+
+.status[data-state="error"] {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 50%, var(--line));
+}
+
+.panel {
+  background: var(--panel);
+  overflow: auto;
+}
+
+.documents {
+  grid-area: docs;
+  border-right: 1px solid var(--line);
+}
+
+.inspector {
+  grid-area: inspector;
+  border-left: 1px solid var(--line);
+}
+
+.panel-head,
+.canvas-toolbar,
+.inspector-body,
+.documents > .muted {
+  padding: 0.85rem 1rem;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+}
+
+.doc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+}
+
+.doc-list li {
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.7rem 0.75rem;
+  margin-bottom: 0.35rem;
+  background: var(--panel-2);
+  cursor: pointer;
+}
+
+.doc-list li:hover,
+.doc-list li.is-active {
+  border-color: var(--accent);
+}
+
+.doc-list strong {
+  display: block;
+}
+
+.doc-list small {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.45rem;
+}
+
+.badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+}
+
+.canvas-wrap {
+  grid-area: canvas;
+  position: relative;
+  min-width: 0;
+  background:
+    radial-gradient(circle at 1px 1px, #232a34 1px, transparent 0) 0 0 / 22px 22px,
+    #12161c;
+}
+
+.canvas-toolbar {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  width: 100%;
+}
+
+.canvas-toolbar input {
+  width: min(280px, 50vw);
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.node {
+  cursor: grab;
+}
+
+#canvas.is-dragging-node,
+#canvas.is-dragging-node .node {
+  cursor: grabbing;
+}
+
+.canvas-hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  pointer-events: none;
+}
+
+.canvas-hint.is-hidden {
+  display: none;
+}
+
+.wires path {
+  fill: none;
+  stroke: #6d7b8d;
+  stroke-width: 1.6;
+  pointer-events: stroke;
+}
+
+.wires path:hover,
+.wires path.is-selected {
+  stroke: var(--accent);
+  stroke-width: 2.4;
+}
+
+.node rect {
+  fill: #1b222c;
+  stroke: #3b4554;
+}
+
+.node.kind-operator rect { stroke: var(--operator); }
+.node.kind-parameter rect { stroke: var(--parameter); }
+.node.kind-group rect { stroke: var(--group); fill: color-mix(in srgb, var(--group) 10%, #1b222c); }
+.node.kind-annotation rect { stroke: var(--annotation); }
+.node.kind-cluster rect { stroke: var(--cluster); }
+
+.node text {
+  fill: var(--text);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.node .kind-label,
+.node .port-label {
+  font-size: 9px;
+  fill: var(--muted);
+}
+
+.node circle {
+  fill: #d7dee8;
+  stroke: #101318;
+}
+
+.node.is-selected rect,
+.node circle.is-selected {
+  stroke-width: 2.2;
+}
+
+.node.is-dimmed {
+  opacity: 0.18;
+}
+
+.inspector-body {
+  display: grid;
+  gap: 1rem;
+}
+
+.kv {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.kv th,
+.kv td {
+  border-top: 1px solid var(--line);
+  padding: 0.4rem 0;
+  vertical-align: top;
+}
+
+.kv th {
+  width: 38%;
+  color: var(--muted);
+  font-weight: 500;
+  text-align: left;
+}
+
+.kv pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.stat {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  min-width: 4.5rem;
+}
+
+.stat b {
+  display: block;
+  font-size: 1.05rem;
+}

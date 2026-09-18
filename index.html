@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphRoots Viewer</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <div>
+            <h1>GraphRoots Viewer</h1>
+            <p>GraphQL explorer for stored computational graphs</p>
+          </div>
+        </div>
+        <label class="api-field">
+          <span>GraphQL</span>
+          <input id="api-url" type="text" spellcheck="false" placeholder="/graphql" />
+        </label>
+        <div id="api-status" class="status" data-state="idle">Idle</div>
+      </header>
+
+      <aside class="panel documents">
+        <div class="panel-head">
+          <h2>Documents</h2>
+          <button id="refresh" type="button">Refresh</button>
+        </div>
+        <p id="doc-summary" class="muted">Loading…</p>
+        <ul id="doc-list" class="doc-list"></ul>
+      </aside>
+
+      <main class="canvas-wrap">
+        <div class="canvas-toolbar">
+          <input id="node-filter" type="search" placeholder="Filter nodes…" />
+          <button id="fit" type="button">Fit</button>
+          <span class="muted">Drag a node to move it</span>
+          <span id="graph-meta" class="muted"></span>
+        </div>
+        <svg id="canvas" role="img" aria-label="Document graph"></svg>
+        <p id="canvas-hint" class="canvas-hint">Select a document to draw its graph.</p>
+      </main>
+
+      <aside class="panel inspector">
+        <div class="panel-head">
+          <h2 id="inspector-title">Properties</h2>
+        </div>
+        <div id="inspector" class="inspector-body">
+          <p class="muted">Select a document, node, port, or edge.</p>
+        </div>
+      </aside>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
