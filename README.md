@@ -4,7 +4,7 @@ A small browser explorer for graphs stored through [GraphRootsApi](../GraphRoots
 
 ## Run
 
-1. Start Neo4j and GraphApi as described in `GraphRootsApi/naive-guide.md`.
+1. Start Neo4j and GraphApi as described in `GraphRootsApi/README.md`.
 2. Import at least one Grasshopper file so the store is not empty.
 3. From this folder:
 
