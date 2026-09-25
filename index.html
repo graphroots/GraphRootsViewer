@@ -24,9 +24,14 @@
       </header>
 
       <aside class="panel documents">
-        <div class="panel-head">
-          <h2>Documents</h2>
-          <button id="refresh" type="button">Refresh</button>
+        <div class="documents-toolbar">
+          <div class="panel-head">
+            <h2>Documents</h2>
+            <button id="refresh" type="button">Refresh</button>
+          </div>
+          <label class="doc-search">
+            <input id="doc-filter" type="search" placeholder="Filter definitions…" aria-label="Filter definitions" autocomplete="off" />
+          </label>
         </div>
         <p id="doc-summary" class="muted">Loading…</p>
         <ul id="doc-list" class="doc-list"></ul>

@@ -149,6 +149,28 @@ input {
   border-right: 1px solid var(--line);
 }
 
+.documents-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.documents-toolbar .panel-head {
+  position: static;
+  border-bottom: none;
+}
+
+.doc-search {
+  display: block;
+  padding: 0 1rem 0.85rem;
+}
+
+.doc-search input {
+  width: 100%;
+}
+
 .inspector {
   grid-area: inspector;
   border-left: 1px solid var(--line);
@@ -191,6 +213,16 @@ input {
 .doc-list li:hover,
 .doc-list li.is-active {
   border-color: var(--accent);
+}
+
+.doc-list li.is-empty {
+  background: transparent;
+  color: var(--muted);
+  cursor: default;
+}
+
+.doc-list li.is-empty:hover {
+  border-color: transparent;
 }
 
 .doc-list strong {

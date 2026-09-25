@@ -8,6 +8,7 @@ const apiStatus = document.querySelector("#api-status");
 const refreshButton = document.querySelector("#refresh");
 const docList = document.querySelector("#doc-list");
 const docSummary = document.querySelector("#doc-summary");
+const docFilter = document.querySelector("#doc-filter");
 const inspector = document.querySelector("#inspector");
 const inspectorTitle = document.querySelector("#inspector-title");
 const graphMeta = document.querySelector("#graph-meta");
@@ -37,6 +38,7 @@ canvas.onSelect = (selection) => {
 };
 
 refreshButton.addEventListener("click", () => refreshDocuments());
+docFilter.addEventListener("input", () => renderDocumentList());
 apiUrlInput.addEventListener("change", () => {
   localStorage.setItem("graphroots.graphqlUrl", apiUrlInput.value.trim());
   refreshDocuments();
@@ -60,11 +62,9 @@ async function refreshDocuments() {
     const data = await listDocuments(apiUrl());
     documents = data.documents.nodes;
     setStatus("ok", `${data.documents.totalCount} documents`);
-    docSummary.textContent = data.documents.totalCount
-      ? `${data.documents.totalCount} stored version${data.documents.totalCount === 1 ? "" : "s"}`
-      : "Database is empty. Import a GH/GHX file through GraphApi first.";
     renderDocumentList();
     if (!documents.length) {
+      docSummary.textContent = "Database is empty. Import a GH/GHX file through GraphApi first.";
       clearGraph("No documents in the store.");
       showMessage("Properties", "Nothing to inspect yet.");
       return;
@@ -82,8 +82,25 @@ async function refreshDocuments() {
 }
 
 function renderDocumentList() {
+  const query = docFilter.value.trim().toLowerCase();
+  const visible = query ? documents.filter((doc) => documentHaystack(doc).includes(query)) : documents;
+
+  if (documents.length) {
+    docSummary.textContent = query
+      ? `${visible.length} of ${documents.length} definition${documents.length === 1 ? "" : "s"}`
+      : `${documents.length} stored version${documents.length === 1 ? "" : "s"}`;
+  }
+
+  if (documents.length && !visible.length) {
+    const empty = document.createElement("li");
+    empty.className = "is-empty";
+    empty.textContent = "No matching definitions.";
+    docList.replaceChildren(empty);
+    return;
+  }
+
   docList.replaceChildren(
-    ...documents.map((doc) => {
+    ...visible.map((doc) => {
       const item = document.createElement("li");
       item.classList.toggle("is-active", docKey(doc) === activeKey);
       item.innerHTML = `
@@ -241,6 +258,21 @@ function formatCell(value) {
   if (value == null || value === "") return "—";
   if (typeof value === "object") return `<pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>`;
   return escapeHtml(String(value));
+}
+
+function documentHaystack(doc) {
+  return [
+    doc.fileName,
+    doc.filePath,
+    doc.origin,
+    doc.documentId,
+    doc.versionId,
+    doc.isNested ? "nested" : "",
+    doc.committed ? "committed" : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 }
 
 function docKey(doc) {
