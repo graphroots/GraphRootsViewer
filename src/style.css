@@ -268,11 +268,42 @@ input {
   width: 100%;
 }
 
-.canvas-toolbar input {
-  width: min(280px, 50vw);
+#view-hint {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-#canvas {
+.canvas-toolbar input {
+  width: min(280px, 40vw);
+}
+
+.view-toggle {
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #10141a;
+  flex: none;
+}
+
+.view-toggle button {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.view-toggle button + button {
+  border-left: 1px solid var(--line);
+}
+
+.view-toggle button.is-active {
+  background: color-mix(in srgb, var(--accent) 24%, var(--panel-2));
+}
+
+#canvas,
+#graph {
   width: 100%;
   height: 100%;
   display: block;
@@ -281,13 +312,144 @@ input {
   touch-action: none;
 }
 
+.canvas-wrap[data-view="canvas"] #graph,
+.canvas-wrap[data-view="graph"] #canvas {
+  display: none;
+}
+
 .node {
   cursor: grab;
 }
 
 #canvas.is-dragging-node,
-#canvas.is-dragging-node .node {
+#canvas.is-dragging-node .node,
+#graph.is-dragging-node,
+#graph.is-dragging-node .g-node {
   cursor: grabbing;
+}
+
+.graph-legend {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  left: 0.85rem;
+  bottom: 0.85rem;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.canvas-wrap[data-view="graph"] .graph-legend {
+  display: flex;
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.3rem;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.swatch.kind-operator { background: var(--operator); }
+.swatch.kind-parameter { background: var(--parameter); }
+.swatch.kind-group { background: var(--group); }
+.swatch.kind-annotation { background: var(--annotation); }
+.swatch.kind-cluster { background: var(--cluster); }
+
+.g-node {
+  cursor: grab;
+}
+
+.g-node .body {
+  stroke: none;
+}
+
+.g-node.kind-operator .body { fill: var(--operator); }
+.g-node.kind-parameter .body { fill: var(--parameter); }
+.g-node.kind-group .body { fill: var(--group); }
+.g-node.kind-annotation .body { fill: var(--annotation); }
+.g-node.kind-cluster .body { fill: var(--cluster); }
+
+.g-node .ring {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 2;
+}
+
+.g-node:hover .ring,
+.g-node.is-selected .ring {
+  stroke: #f4f7fb;
+}
+
+.g-node.is-pinned .ring {
+  stroke-dasharray: 3 2;
+  stroke: color-mix(in srgb, white 70%, transparent);
+}
+
+.g-node text {
+  pointer-events: none;
+}
+
+.g-node .glyph {
+  fill: #101318;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.g-node .caption {
+  fill: var(--text);
+  font-size: 11px;
+}
+
+.g-node.is-dimmed,
+.g-edge.is-dimmed {
+  opacity: 0.16;
+}
+
+.g-edge .line {
+  fill: none;
+  stroke: #8b97a8;
+  stroke-width: 1.5;
+}
+
+.g-edge .hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 12;
+  pointer-events: stroke;
+}
+
+.g-edge:hover .line,
+.g-edge.is-selected .line {
+  stroke: var(--accent);
+  stroke-width: 2.2;
+}
+
+.g-edge .rel text {
+  fill: var(--text);
+  font-size: 9px;
+  pointer-events: none;
+}
+
+.g-edge .rel rect {
+  fill: #1a212b;
+  stroke: #3b4554;
+  pointer-events: none;
+}
+
+.g-edge.is-selected .rel rect {
+  stroke: var(--accent);
+}
+
+.g-edge .rel.is-hidden {
+  display: none;
 }
 
 .canvas-hint {

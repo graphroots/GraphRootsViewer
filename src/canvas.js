@@ -21,6 +21,7 @@ export class GraphCanvas {
     this.onSelect = () => {};
     this.filter = "";
     this.selectedKey = null;
+    this.needsFit = false;
     this.dragging = null;
     this.ns = "http://www.w3.org/2000/svg";
 
@@ -47,6 +48,7 @@ export class GraphCanvas {
     this.edges = edges;
     this.layouts = nodes.map((node, index) => layoutNode(node, portsByNode.get(node.nodeId) ?? [], index));
     this.selectedKey = null;
+    this.needsFit = true;
     this.#draw(edges);
     this.fit();
   }
@@ -56,6 +58,7 @@ export class GraphCanvas {
     this.portIndex = new Map();
     this.edges = [];
     this.selectedKey = null;
+    this.needsFit = false;
     this.svg.replaceChildren();
     if (message) this.svg.dataset.empty = message;
     else delete this.svg.dataset.empty;
@@ -71,6 +74,8 @@ export class GraphCanvas {
 
   fit() {
     if (!this.layouts.length) return;
+    const box = this.svg.getBoundingClientRect();
+    if (box.width < 2 || box.height < 2) return;
     const pad = 80;
     const xs = this.layouts.map((item) => item.x);
     const ys = this.layouts.map((item) => item.y);
@@ -80,13 +85,13 @@ export class GraphCanvas {
     const minY = Math.min(...ys) - pad;
     const width = Math.max(1, Math.max(...rights) - minX + pad);
     const height = Math.max(1, Math.max(...bottoms) - minY + pad);
-    const box = this.svg.getBoundingClientRect();
     const k = Math.min(box.width / width, box.height / height, 1.8);
     this.view = {
       x: (box.width - width * k) / 2 - minX * k,
       y: (box.height - height * k) / 2 - minY * k,
       k,
     };
+    this.needsFit = false;
     this.#applyView();
   }
 

@@ -37,14 +37,26 @@
         <ul id="doc-list" class="doc-list"></ul>
       </aside>
 
-      <main class="canvas-wrap">
+      <main class="canvas-wrap" data-view="canvas">
         <div class="canvas-toolbar">
+          <div class="view-toggle" role="group" aria-label="View mode">
+            <button id="view-canvas" type="button" class="is-active" aria-pressed="true">Canvas</button>
+            <button id="view-graph" type="button" aria-pressed="false">Graph</button>
+          </div>
           <input id="node-filter" type="search" placeholder="Filter nodes…" />
           <button id="fit" type="button">Fit</button>
-          <span class="muted">Drag a node to move it</span>
+          <span id="view-hint" class="muted">Drag a node to move it</span>
           <span id="graph-meta" class="muted"></span>
         </div>
-        <svg id="canvas" role="img" aria-label="Document graph"></svg>
+        <svg id="canvas" role="img" aria-label="Component canvas"></svg>
+        <svg id="graph" role="img" aria-label="Definition graph"></svg>
+        <div class="graph-legend" aria-hidden="true">
+          <span><i class="swatch kind-operator"></i>Operator</span>
+          <span><i class="swatch kind-parameter"></i>Parameter</span>
+          <span><i class="swatch kind-group"></i>Group</span>
+          <span><i class="swatch kind-annotation"></i>Annotation</span>
+          <span><i class="swatch kind-cluster"></i>Cluster</span>
+        </div>
         <p id="canvas-hint" class="canvas-hint">Select a document to draw its graph.</p>
       </main>
 
