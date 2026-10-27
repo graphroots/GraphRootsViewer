@@ -87,6 +87,37 @@ query ViewerDocument($documentId: ID!, $versionId: ID!) {
 }
 `;
 
+const VERSIONS_QUERY = `
+query ViewerVersions($documentId: ID!, $first: Int, $after: String) {
+  documents(filter: { documentId: $documentId }, first: $first, after: $after) {
+    nodes {
+      documentId
+      versionId
+      fileName
+      committed
+      fileCreationTimeUtc
+      fileLastWriteTimeUtc
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+`;
+
+// Keys and structured changes only: the viewer already holds both graphs and looks the entities up there.
+const COMPARE_QUERY = `
+query ViewerCompare($before: DocumentKeyInput!, $after: DocumentKeyInput!) {
+  compareDocuments(before: $before, after: $after) {
+    addedNodes { nodeId }
+    removedNodes { nodeId }
+    changedNodes { after { nodeId } changes { kind key before after } }
+    addedPorts { portId }
+    removedPorts { portId }
+    addedEdges { sourcePortId targetPortId }
+    removedEdges { sourcePortId targetPortId }
+  }
+}
+`;
+
 export class GraphQlError extends Error {
   constructor(messages) {
     super(messages.join("\n"));
@@ -114,6 +145,24 @@ export async function graphql(url, query, variables) {
 
 export function listDocuments(url) {
   return graphql(url, DOCUMENTS_QUERY, { first: 200 });
+}
+
+/** Every stored version of the document, following the connection's pages. Same shape as one page: `{ documents: { nodes } }`. */
+export async function listVersions(url, documentId) {
+  const nodes = [];
+  let after = null;
+  do {
+    const { documents } = await graphql(url, VERSIONS_QUERY, { documentId, first: 100, after });
+    nodes.push(...documents.nodes);
+    const next = documents.pageInfo?.hasNextPage ? documents.pageInfo.endCursor : null;
+    after = next && next !== after ? next : null;
+  } while (after);
+  return { documents: { nodes } };
+}
+
+export function compareDocuments(url, before, after) {
+  const key = (doc) => ({ documentId: doc.documentId, versionId: doc.versionId });
+  return graphql(url, COMPARE_QUERY, { before: key(before), after: key(after) });
 }
 
 export function loadDocument(url, documentId, versionId) {
